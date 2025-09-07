@@ -123,8 +123,6 @@ Resposta: `token` JWT + dados do usuário.
 - **PUT /?id=<userId>** → Atualizar usuário (admin qualquer um, operador só ele mesmo)
 - **DELETE /?id=<userId>** → Excluir usuário (apenas admin)
 
----
-
 ## 🔹 Rotas de Clientes (`/api/clients`)
 
 - **POST /** → Criar cliente (operador ou admin)
@@ -133,17 +131,45 @@ Resposta: `token` JWT + dados do usuário.
 ```json
 {
   "name": "Loja Centro",
-  "address": "Rua Principal, 123 - São Paulo",
-  "phone": "1133334444",
   "dvrIp": "192.168.1.50",
+  "dvrPort": 8080,
+  "address": "Rua Principal, 123 - São Paulo",
   "dvrUser": "admin",
   "dvrPassword": "12345"
 }
 ```
 
-- **GET /** → Listar todos clientes ou buscar por ID com query `?id=<clientId>`
+> Obs.: `createdBy` será preenchido automaticamente pelo usuário logado.
+
+- **GET /** → Listar todos os clientes ou buscar por ID usando query `?id=<clientId>`
+  Exemplo:
+
+  ```
+  GET /api/clients?id=68bd0214db4d60aaa988343f
+  ```
+
 - **PUT /** → Atualizar cliente por query `?id=<clientId>`
+  Body JSON (campos opcionais):
+
+```json
+{
+  "name": "Loja Centro Atualizada",
+  "dvrIp": "192.168.1.51",
+  "dvrPort": 8081,
+  "address": "Rua Nova, 456 - São Paulo",
+  "dvrUser": "admin2",
+  "dvrPassword": "67890"
+}
+```
+
 - **DELETE /** → Excluir cliente por query `?id=<clientId>`
+  Exemplo:
+
+```
+DELETE /api/clients?id=68bd0214db4d60aaa988343f
+```
+
+> Todas as ações de CRUD registram logs automáticos com o usuário que realizou a operação.
 
 ---
 
