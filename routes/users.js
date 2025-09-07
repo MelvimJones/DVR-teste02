@@ -74,13 +74,16 @@ router.put("/:id", auth, async (req, res) => {
 });
 
 // 📌 Listar todos os usuários (apenas admin)
-router.get("/", auth, isAdmin, async (req, res) => {
-  try {
-    const users = await User.find().select("-password"); // oculta senha
-    res.json(users);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+router.get(
+  "/",
+  /* auth, isAdmin, */ async (req, res) => {
+    try {
+      const users = await User.find().select("-password"); // oculta senha
+      res.json(users);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
   }
-});
+);
 
 module.exports = router;
