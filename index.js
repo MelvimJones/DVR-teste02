@@ -10,6 +10,11 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+// Rota de teste / boas-vindas
+app.get("/", (req, res) => {
+  res.send("🎉 API DVR Monitoring funcionando! 🚀");
+});
+
 // Rotas
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/users", require("./routes/users"));
@@ -24,4 +29,11 @@ mongoose
   .then(() => console.log("MongoDB conectado"))
   .catch((err) => console.error(err));
 
+// Se estiver rodando localmente, usa porta do .env ou 5000
+if (process.env.NODE_ENV !== "production") {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+}
+
+// Para deploy Vercel
 module.exports = app;
