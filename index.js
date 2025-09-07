@@ -10,6 +10,9 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+// Evitar 404 do favicon
+app.get("/favicon.ico", (req, res) => res.status(204).end());
+
 // Rota de teste / boas-vindas
 app.get("/", (req, res) => {
   res.send("🎉 API DVR Monitoring funcionando! 🚀");
