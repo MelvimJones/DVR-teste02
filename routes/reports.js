@@ -11,7 +11,7 @@ router.post("/", auth, async (req, res) => {
 
     const report = await Report.create({
       shiftId,
-      userId: req.user.id, // usuário logado
+      userId: req.user.id,
       description,
       priority,
     });
@@ -22,11 +22,16 @@ router.post("/", auth, async (req, res) => {
       action: `Criou relatório: ${report._id}`,
     });
 
+    // 🔥 Notificar em tempo real
+    const io = req.app.get("io");
+    io.emit("report_created", report);
+
     res.status(201).json({ message: "Relatório criado com sucesso", report });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
 });
+
 
 // ✅ Listar todos os relatórios ou buscar por ID via query
 router.get("/", auth, async (req, res) => {

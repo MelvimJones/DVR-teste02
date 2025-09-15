@@ -2,6 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
+const http = require("http");
+const { Server } = require("socket.io");
 
 dotenv.config();
 const app = express();
@@ -32,11 +34,31 @@ mongoose
   .then(() => console.log("MongoDB conectado"))
   .catch((err) => console.error(err));
 
-// Se estiver rodando localmente, usa porta do .env ou 5000
+// Criar servidor HTTP e integrar com Socket.IO
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "*", // libera para testes, em produção restringe
+  },
+});
+
+// Escutar conexões
+io.on("connection", (socket) => {
+  console.log("Cliente conectado:", socket.id);
+
+  socket.on("disconnect", () => {
+    console.log("Cliente desconectado:", socket.id);
+  });
+});
+
+// Tornar o io acessível nas rotas
+app.set("io", io);
+
+// Iniciar servidor
 if (process.env.NODE_ENV !== "production") {
   const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+  server.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
 }
 
-// Para deploy Vercel
+// Para Vercel (não suporta socket.io direto, só rotas HTTP)
 module.exports = app;
