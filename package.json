@@ -1,7 +1,7 @@
 {
   "name": "dvr-monitoring-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "- Node.js - Express - MongoDB (Atlas ou local) - Mongoose - bcryptjs (hash de senhas) - jsonwebtoken (JWT) - dotenv - cors - nodemon (desenvolvimento)",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -20,6 +20,17 @@
     "mongoose": "^8.18.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
-  }
+    "cross-env": "^10.0.0",
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.10",
+    "supertest": "^7.1.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MelvimJones/DVR-teste02.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MelvimJones/DVR-teste02/issues"
+  },
+  "homepage": "https://github.com/MelvimJones/DVR-teste02#readme"
 }

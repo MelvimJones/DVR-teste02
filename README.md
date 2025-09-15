@@ -249,3 +249,113 @@ DELETE /api/clients?id=68bd0214db4d60aaa988343f
 - Logs são registrados automaticamente nas ações de CRUD de clientes, turnos e relatórios.
 
 ---
+---
+Novas atualizações 
+
+Perfeito! Vou te fornecer um **guia completo das rotas que você tem**, incluindo:
+
+* URL
+* Método HTTP
+* Middleware (autenticação/role)
+* JSON de exemplo que você deve enviar
+
+Vou organizar por recurso: **Clients, Logs, Shifts, Users**.
+
+---
+
+## **1️⃣ Clients**
+
+**Base URL:** `/api/clients`
+**Middleware:** `authMiddleware` (qualquer usuário autenticado)
+
+| Ação                  | Método | URL                           | Body JSON                                                                             | Observações                                                                           |
+| --------------------- | ------ | ----------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| Criar cliente         | POST   | `/api/clients`                | `json { "name": "Cliente Teste", "dvrIp": "192.168.0.10", "address": "Rua A, 123" } ` | `dvrPort`, `dvrUser` e `dvrPassword` são automáticos. `createdBy` é o usuário logado. |
+| Listar todos clientes | GET    | `/api/clients`                | -                                                                                     | Retorna array de clientes.                                                            |
+| Buscar cliente por ID | GET    | `/api/clients?id=<CLIENT_ID>` | -                                                                                     | Retorna o cliente específico.                                                         |
+| Atualizar cliente     | PUT    | `/api/clients?id=<CLIENT_ID>` | `json { "name": "Novo Nome", "address": "Nova Rua, 456" } `                           | Atualiza campos informados.                                                           |
+| Excluir cliente       | DELETE | `/api/clients?id=<CLIENT_ID>` | -                                                                                     | Remove o cliente.                                                                     |
+
+---
+
+## **2️⃣ Logs**
+
+**Base URL:** `/api/logs`
+**Middleware:** `authMiddleware` (+ admin para listar todos)
+
+| Ação              | Método | URL         | Body JSON                             | Observações                              |
+| ----------------- | ------ | ----------- | ------------------------------------- | ---------------------------------------- |
+| Listar todos logs | GET    | `/api/logs` | -                                     | Apenas admin pode acessar.               |
+| Criar log manual  | POST   | `/api/logs` | `json { "action": "Ação de teste" } ` | Qualquer usuário autenticado pode criar. |
+
+---
+
+## **3️⃣ Shifts (Turnos)**
+
+**Base URL:** `/api/shifts`
+**Middleware:** `authMiddleware`
+
+| Ação                | Método | URL                      | Body JSON                                                                                                                                      | Observações                                  |
+| ------------------- | ------ | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| Criar turno         | POST   | `/api/shifts`            | `json { "operator": "<USER_ID>", "startTime": "2025-09-14T08:00:00.000Z", "endTime": "2025-09-14T16:00:00.000Z", "notes": "Turno de teste" } ` | `operator` deve ser ID de usuário existente. |
+| Listar todos turnos | GET    | `/api/shifts`            | -                                                                                                                                              | Retorna array de turnos.                     |
+| Buscar turno por ID | GET    | `/api/shifts/<SHIFT_ID>` | -                                                                                                                                              | Retorna o turno específico.                  |
+| Atualizar turno     | PUT    | `/api/shifts/<SHIFT_ID>` | `json { "notes": "Notas atualizadas", "startTime": "...", "endTime": "..." } `                                                                 | Atualiza campos informados.                  |
+| Excluir turno       | DELETE | `/api/shifts/<SHIFT_ID>` | -                                                                                                                                              | Remove o turno.                              |
+
+---
+
+## **4️⃣ Users**
+
+**Base URL:** `/api/users`
+
+| Ação                                | Método | URL                    | Body JSON                                                                                        | Middleware       | Observações                                                                        |
+| ----------------------------------- | ------ | ---------------------- | ------------------------------------------------------------------------------------------------ | ---------------- | ---------------------------------------------------------------------------------- |
+| Registrar usuário (sempre operador) | POST   | `/api/users/register`  | `json { "name": "Operador Teste", "phone": "11999999999", "password": "123456" } `               | nenhum           | Cria usuário com role `operator`.                                                  |
+| Criar usuário com qualquer role     | POST   | `/api/users/create`    | `json { "name": "Admin Teste", "phone": "11888888888", "password": "123456", "role": "admin" } ` | `auth + isAdmin` | Apenas admin pode definir role.                                                    |
+| Atualizar usuário                   | PUT    | `/api/users/<USER_ID>` | `json { "name": "Novo Nome", "role": "operator" } `                                              | `auth`           | Admin pode atualizar qualquer usuário; operador apenas seus dados e não muda role. |
+| Listar todos usuários               | GET    | `/api/users`           | -                                                                                                | nenhum           | Retorna array sem senha.                                                           |
+
+---
+
+💡 **Dicas importantes para os testes e CRUD manual:**
+
+1. Sempre envie o **header Authorization** se a rota exigir `authMiddleware`:
+
+```
+Authorization: Bearer <TOKEN>
+```
+
+2. Para `operator` ou `admin` nos testes, primeiro crie os usuários e faça login para pegar o token:
+
+```json
+// POST /api/auth/login
+{
+  "phone": "11999999999",
+  "password": "123456"
+}
+```
+
+Resposta:
+
+```json
+{
+  "token": "<JWT_TOKEN>",
+  "user": {
+    "_id": "<USER_ID>",
+    "name": "Operador Teste",
+    "phone": "11999999999",
+    "role": "operator"
+  }
+}
+```
+
+3. Use os `_id` retornados em `operator`, `createdBy` ou `userId` nos outros objetos.
+
+4. Sempre use **`new Date().toISOString()`** ou datas válidas ISO para `startTime` e `endTime`.
+
+---
+
+Se você quiser, posso montar **uma coleção pronta de exemplos de JSON para cada rota** já com todos os IDs fictícios para você **testar direto no Postman ou Insomnia**, sem precisar rodar os testes do Jest.
+
+Quer que eu faça isso?

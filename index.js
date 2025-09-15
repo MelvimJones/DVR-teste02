@@ -23,7 +23,7 @@ app.use("/api/auth", require("./routes/auth"));
 app.use("/api/users", require("./routes/users"));
 app.use("/api/clients", require("./routes/clients"));
 app.use("/api/shifts", require("./routes/shifts"));
-// app.use("/api/reports", require("./routes/reports"));
+app.use("/api/reports", require("./routes/reports"));
 app.use("/api/logs", require("./routes/logs"));
 
 // Conexão ao MongoDB
