@@ -4,19 +4,10 @@ const Log = require("../models/Log");
 const User = require("../models/User");
 const auth = require("../middleware/authMiddleware");
 
-// 📌 Listar todos os logs (apenas admin pode acessar)
+
+// 📌 Listar todos os logs (qualquer usuário logado pode acessar)
 router.get("/", auth, async (req, res) => {
   try {
-    // Verifica se o usuário logado é admin
-    if (req.user.role !== "admin") {
-      return res
-        .status(403)
-        .json({
-          error:
-            "Acesso negado: apenas administradores podem visualizar os logs.",
-        });
-    }
-
     const logs = await Log.find().populate("userId", "name phone role");
     res.json(logs);
   } catch (err) {
