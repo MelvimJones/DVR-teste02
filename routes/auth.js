@@ -53,9 +53,13 @@ router.post("/login", async (req, res) => {
       return res.status(404).json({ error: "Usuário não encontrado" });
     }
 
+    // 🚨 Verifica status
+    if (user.status !== "active") {
+      return res.status(403).json({ error: "Conta pendente ou inativa. Aguarde aprovação do administrador." });
+    }
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      // Log de tentativa falha
       await Log.create({
         userId: user._id,
         action: `Tentativa de login falha: senha inválida. IP: ${ip}`,
@@ -69,7 +73,6 @@ router.post("/login", async (req, res) => {
       { expiresIn: "1d" }
     );
 
-    // Log de login bem-sucedido
     await Log.create({
       userId: user._id,
       action: `Login realizado com sucesso. IP: ${ip}`,
@@ -80,5 +83,6 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
 
 module.exports = router;

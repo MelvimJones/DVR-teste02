@@ -83,4 +83,42 @@ router.get("/", auth, isAdmin, async (req, res) => {
   }
 });
 
+// 📌 Ativar usuário (apenas admin)
+router.put("/activate", auth, isAdmin, async (req, res) => {
+  try {
+    const { id } = req.query;
+    if (!id) return res.status(400).json({ error: "O parâmetro 'id' é obrigatório" });
+
+    const user = await User.findByIdAndUpdate(
+      id,
+      { status: "active" },
+      { new: true }
+    );
+
+    if (!user) return res.status(404).json({ error: "Usuário não encontrado" });
+    res.json({ message: "Usuário ativado com sucesso", user });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// 📌 Desativar usuário (apenas admin)
+router.put("/deactivate", auth, isAdmin, async (req, res) => {
+  try {
+    const { id } = req.query;
+    if (!id) return res.status(400).json({ error: "O parâmetro 'id' é obrigatório" });
+
+    const user = await User.findByIdAndUpdate(
+      id,
+      { status: "inactive" },
+      { new: true }
+    );
+
+    if (!user) return res.status(404).json({ error: "Usuário não encontrado" });
+    res.json({ message: "Usuário desativado com sucesso", user });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
 module.exports = router;

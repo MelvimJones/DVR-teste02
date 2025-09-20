@@ -10,6 +10,11 @@ const UserSchema = new mongoose.Schema(
       enum: ["admin", "operator", "client"],
       default: "operator",
     },
+    status: {
+      type: String,
+      enum: ["pending", "active", "inactive"],
+      default: "pending", // 🚨 todo novo usuário começa pendente
+    },
   },
   { timestamps: true }
 );
